@@ -1,0 +1,32 @@
+_commit: v0.0.54
+_src_path: gh:serious-scaffold/ss-python
+author_email: jahagirdar.vs@gmail.com
+author_name: Vijayvithal Jahagirdar
+copyright_holder: Dyumnin Semiconductors
+copyright_license: MIT License
+copyright_year: 2024+
+coverage_threshold: 100
+default_py: '3.10'
+development_status: Production/Stable
+max_py: '3.12'
+min_py: '3.8'
+module_name: dyu
+organization_name: Dyumnin Semiconductors
+package_name: dyu
+platforms:
+- macos
+- ubuntu
+- windows
+project_description: A wrapper click script for setting up everything related to dyumnin
+    semiconductors projects.
+project_name: Dyu
+readme_content: '## To ensure consistent development style it is necessary to adhere
+    to rules regarding folder structure, build systems etc.
+
+    This script aims to create a unified wrapper over all templates and rules.
+
+
+    '
+repo_name: dyu
+repo_namespace: dyumnin
+repo_platform: github
