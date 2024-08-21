@@ -1,7 +1,8 @@
 """Command Line Interface."""
 
-import copier
 import subprocess
+
+import copier
 import typer
 
 app = typer.Typer()
@@ -15,33 +16,25 @@ def run() -> None:
 
 @app.command()
 def venv() -> None:
-    """
-    Creates a virtual env file.
-    """
+    """Creates a virtual env file."""
     subprocess.run(["python3", "-m", "venv", "venv"])
 
 
 @app.command()
 def ip(name: str) -> None:
-    """
-    Creates an IP folder layout.
-    """
+    """Creates an IP folder layout."""
     copier.run_copy("gh:dyu-copier/hdl_unit", name)
 
 
 @app.command()
 def cocotbext(name: str) -> None:
-    """
-    Creates an cocotbext plugin folder layout.
-    """
+    """Creates an cocotbext plugin folder layout."""
     copier.run_copy("gh:dyu-copier/cocotbext", name)
 
 
 @app.command()
 def peakrdl(name: str) -> None:
-    """
-    Creates an peakrdl plugin folder layout.
-    """
+    """Creates an peakrdl plugin folder layout."""
     copier.run_copy("gh:dyu-copier/cocotbext", name)
 
 

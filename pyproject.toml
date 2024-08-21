@@ -1,8 +1,8 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-    "setuptools==71.1.0",
-    "setuptools-scm==8.1.0",
+    "setuptools==71.1",
+    "setuptools-scm==8.1",
 ]
 
 [project]
@@ -34,9 +34,9 @@ dynamic = [
     "version",
 ]
 dependencies = [
+    "copier>=9.3.1",
     "pydantic-settings",
     "typer[all]",
-    "copier>=9.3.1",
 ]
 urls.documentation = "https://dyumnin.github.io/dyu"
 urls.issue = "https://github.com/dyumnin/dyu/issues"
@@ -46,7 +46,7 @@ scripts.dyu = "dyu.cli:app"
 [tool.pdm]
 distribution = true
 [tool.pdm.version]
-use_scm=true
+use_scm = true
 
 [tool.pdm.dev-dependencies]
 doc = [
@@ -70,7 +70,7 @@ test = [
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0"
-local_scheme= "no-local-version"
+local_scheme = "no-local-version"
 #strip-dev = true
 
 [tool.ruff]
