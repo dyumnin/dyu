@@ -1,6 +1,6 @@
 """Command Line Interface."""
 
-#import pkg_resources
+# import pkg_resources
 import subprocess
 import copier
 import typer
@@ -10,7 +10,7 @@ from xdg_base_dirs import xdg_config_home
 from .beancounter import app as bean
 
 app = typer.Typer()
-app.add_typer(bean,name="bean")
+app.add_typer(bean, name="bean")
 
 
 @app.command()
@@ -28,7 +28,7 @@ def venv() -> None:
 @app.command()
 def ip(name: str, org: str = "dyu.yaml") -> None:
     """Creates an IP folder layout."""
-    data=read_config(org)
+    data = read_config(org)
     print(f"DATA={data}")
     copier.run_copy("gh:dyu-copier/hdl_unit", name, data=data)
 

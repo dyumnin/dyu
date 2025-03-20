@@ -1,47 +1,49 @@
-[project]
-name = "dyu"
-dynamic = ["version"]
-description = "A wrapper click script for setting up everything related to dyumnin semiconductors projects."
-keywords = [
-    "copier-template",
-    "full-development-lifecycle",
-    "project-template",
-    "serious-scaffold",
-]
-authors = [
-    { email = "jahagirdar.vs@gmail.com", name = "Vijayvithal Jahagirdar" },
-]
-dependencies = [
-    "copier>=9.3.1",
-    "pydantic-settings",
-    "typer[all]",
-"xdg_base_dirs",
-"requests",
-]
-requires-python = ">=3.10"
-readme = "README.md"
-license = { text = "MIT" }
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-]
-
 [build-system]
-requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[project.scripts]
-dyu = "dyu.cli:app"
-[project.urls]
-Documentation = "https://dyumnin.github.io/dyu"
-Issue = "https://github.com/dyumnin/dyu/issues"
-Repository = "https://github.com/dyumnin/dyu"
+requires = [
+  "pdm-backend",
+]
+
+[project]
+name = "dyu"
+description = "A wrapper click script for setting up everything related to dyumnin semiconductors projects."
+readme = "README.md"
+keywords = [
+  "copier-template",
+  "full-development-lifecycle",
+  "project-template",
+  "serious-scaffold",
+]
+license = { text = "MIT" }
+authors = [
+  { email = "jahagirdar.vs@gmail.com", name = "Vijayvithal Jahagirdar" },
+]
+requires-python = ">=3.10"
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+dynamic = [
+  "version",
+]
+dependencies = [
+  "copier>=9.3.1",
+  "pydantic-settings",
+  "requests",
+  "typer[all]",
+  "xdg-base-dirs",
+]
+urls.Documentation = "https://dyumnin.github.io/dyu"
+urls.Issue = "https://github.com/dyumnin/dyu/issues"
+urls.Repository = "https://github.com/dyumnin/dyu"
+scripts.dyu = "dyu.cli:app"
+
 [tool.pdm]
 distribution = true
 [tool.pdm.version]
@@ -50,22 +52,21 @@ version_format = "version:format_version"
 
 [tool.pdm.dev-dependencies]
 doc = [
-    "Sphinx",
-    "autodoc-pydantic",
-    "coverage",
-    "furo",
-    "mypy[reports]",
-    "myst-parser",
-    "pytest",
-    "sphinx-click",
-    "sphinx-design",
+  "Sphinx",
+  "autodoc-pydantic",
+  "coverage",
+  "furo",
+  "mypy[reports]",
+  "myst-parser",
+  "pytest",
+  "sphinx-click",
+  "sphinx-design",
 ]
 lint = [
-    "mypy",
-"ruff",
+  "mypy",
+  "ruff",
 ]
 test = [
-    "coverage",
-    "pytest",
+  "coverage",
+  "pytest",
 ]
-
