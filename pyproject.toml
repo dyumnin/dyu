@@ -1,25 +1,26 @@
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = [
-    "setuptools==71.1",
-    "setuptools-scm==8.1",
-]
-
 [project]
 name = "dyu"
+dynamic = ["version"]
 description = "A wrapper click script for setting up everything related to dyumnin semiconductors projects."
-readme = "README.md"
 keywords = [
     "copier-template",
     "full-development-lifecycle",
     "project-template",
     "serious-scaffold",
 ]
-license = { text = "MIT" }
 authors = [
     { email = "jahagirdar.vs@gmail.com", name = "Vijayvithal Jahagirdar" },
 ]
-requires-python = ">=3.8"
+dependencies = [
+    "copier>=9.3.1",
+    "pydantic-settings",
+    "typer[all]",
+"xdg_base_dirs",
+"requests",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -30,23 +31,22 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-dynamic = [
-    "version",
-]
-dependencies = [
-    "copier>=9.3.1",
-    "pydantic-settings",
-    "typer[all]",
-]
-urls.documentation = "https://dyumnin.github.io/dyu"
-urls.issue = "https://github.com/dyumnin/dyu/issues"
-urls.repository = "https://github.com/dyumnin/dyu"
-scripts.dyu = "dyu.cli:app"
 
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project.scripts]
+dyu = "dyu.cli:app"
+[project.urls]
+Documentation = "https://dyumnin.github.io/dyu"
+Issue = "https://github.com/dyumnin/dyu/issues"
+Repository = "https://github.com/dyumnin/dyu"
 [tool.pdm]
 distribution = true
 [tool.pdm.version]
-use_scm = true
+source = "scm"
+version_format = "version:format_version"
 
 [tool.pdm.dev-dependencies]
 doc = [
@@ -62,77 +62,10 @@ doc = [
 ]
 lint = [
     "mypy",
+"ruff",
 ]
 test = [
     "coverage",
     "pytest",
 ]
 
-[tool.setuptools_scm]
-fallback_version = "0.0.0"
-local_scheme = "no-local-version"
-#strip-dev = true
-
-[tool.ruff]
-src = [
-    "src",
-]
-
-fix = true
-lint.select = [
-    "B",      # flake8-bugbear
-    "D",      # pydocstyle
-    "E",      # pycodestyle error
-    "F",      # Pyflakes
-    "I",      # isort
-    "RUF100", # Unused noqa directive
-    "S",      # flake8-bandit
-    "SIM",    # flake8-simplify
-    "UP",     # pyupgrade
-    "W",      # pycodestyle warning
-]
-lint.per-file-ignores."tests/*" = [
-    "S101",
-]
-lint.pydocstyle.convention = "google"
-
-[tool.codespell]
-write-changes = true
-check-filenames = true
-
-[tool.pyproject-fmt]
-indent = 4
-keep_full_version = false
-max_supported_python = "3.12"
-
-[tool.pytest.ini_options]
-addopts = "-l -s --durations=0"
-log_cli = true
-log_cli_level = "info"
-log_date_format = "%Y-%m-%d %H:%M:%S"
-log_format = "%(asctime)s %(levelname)s %(message)s"
-minversion = "6.0"
-
-[tool.coverage.report]
-fail_under = 100
-
-[tool.coverage.run]
-source = [
-    "dyu",
-]
-
-[tool.mypy]
-check_untyped_defs = true
-disallow_any_unimported = true
-disallow_untyped_defs = true
-enable_error_code = [
-    "ignore-without-code",
-]
-exclude = [
-    "build",
-    "doc",
-]
-no_implicit_optional = true
-show_error_codes = true
-warn_return_any = true
-warn_unused_ignores = true
