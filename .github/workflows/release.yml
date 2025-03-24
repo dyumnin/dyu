@@ -1,61 +1,93 @@
-name: Release
+# Publish package on main branch if it's tagged with 'v*'
 
+name: release & publish workflow
+
+# Controls when the action will run.
 on:
+  # Triggers the workflow on push events but only for the master branch
   push:
     tags:
       - 'v*'
 
-concurrency:
-  cancel-in-progress: true
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
+permissions:
+  pages: write
+  id-token: write
+  pull-requests: write
+  contents: write
+  repository-projects: write
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  pages-build:
-    runs-on: ubuntu-22.04
+  # This workflow contains a single job called "release"
+  release:
+    name: Create Release
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-versions: ["3.12"]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Get version from tag
+        id: tag_name
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        shell: bash
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up PDM
-        uses: pdm-project/setup-pdm@568ddd69406b30de1774ec0044b73ae06e716aa4 # v4
-        with:
-          cache: true
-          python-version: '3.10'
-          version: 2.16.1
-      - run: env | sort
-      - run: make dev-doc
-      - run: make doc
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
-        with:
-          path: public
-  pages:
-    environment:
-      name: github-pages
-    needs:
-      - pages-build
-    permissions:
-      id-token: write
-      pages: write
-    runs-on: ubuntu-22.04
-    steps:
-      - id: deployment
-        name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
-          on:
-  pypi-publish:
-    name: upload release to PyPI
-    runs-on: ubuntu-latest
-    permissions:
-      # This permission is needed for private repositories.
-      contents: read
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v4
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          version: ${{ steps.tag_name.outputs.current_version }}
+          path: ./CHANGELOG.md
 
-      - name: Publish package distributions to PyPI
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-versions }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pdm
+
+      - name: build documentation
+        run: |
+          make dev-doc
+          make doc
+
+      - name: publish documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+
+      - name: Build wheels and source tarball
+        run: >-
+          pdm build
+
+      - name: show temporary files
+        run: >-
+          ls -l
+
+      - name: create github release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          files: dist/*.whl
+          draft: false
+          prerelease: false
+
+      - uses: pdm-project/setup-pdm@v3
+      - name: publish to PyPI
         run: pdm publish
