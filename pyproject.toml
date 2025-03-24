@@ -51,17 +51,6 @@ source = "scm"
 version_format = "version:format_version"
 
 [tool.pdm.dev-dependencies]
-doc = [
-  "Sphinx",
-  "autodoc-pydantic",
-  "coverage",
-  "furo",
-  "mypy[reports]",
-  "myst-parser",
-  "pytest",
-  "sphinx-click",
-  "sphinx-design",
-]
 lint = [
   "mypy",
   "ruff",
@@ -69,4 +58,20 @@ lint = [
 test = [
   "coverage",
   "pytest",
+]
+
+[dependency-groups]
+doc = [
+    "markdown-callouts>=0.3",
+    "markdown-exec>=1.7",
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.6.9",
+    "mkdocs-coverage>=1.0",
+    "mkdocs-gen-files>=0.5",
+    "mkdocs-git-committers-plugin-2>=1.2",
+    "mkdocs-literate-nav>=0.6",
+    "mkdocs-material>=9.4",
+    "mkdocs-minify-plugin>=0.7",
+    "mkdocstrings[python]>=0.23",
+    "tomli>=2.0; python_version < '3.11'",
 ]

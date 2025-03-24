@@ -22,7 +22,7 @@ def run() -> None:
 @app.command()
 def venv() -> None:
     """Creates a virtual env file."""
-    subprocess.run(["python3", "-m", "venv", "venv"])
+    subprocess.run(["python3", "-m", "venv", "venv"], check=False)
 
 
 @app.command()
@@ -47,17 +47,13 @@ def peakrdl(name: str, org: str = "dyu.yaml") -> None:
 
 @app.command()
 def plan(configfile: str, org: str = "dyu.yaml") -> None:
-    """
-    Creates a plan using taskJuggler
-    """
+    """Creates a plan using taskJuggler."""
     # template = pkg_resources.resource_filename("dyu", "template/plan.tji")
     raise NotImplementedError("This feature is not implemented")
 
 
 def read_config(file="config.yml"):
-    """
-    Reads config file at ~/.config/dyu/config.yml and returns the value
-    """
+    """Reads config file at ~/.config/dyu/config.yml and returns the value."""
     cfg_path = os.path.join(xdg_config_home(), "dyu")
     cfg_file = os.path.join(cfg_path, file)
     if not os.path.exists(cfg_path):
@@ -71,7 +67,7 @@ def read_config(file="config.yml"):
             org = typer.prompt("Your Org")
             email = typer.prompt("Your Email ID")
             yaml.dump({"author": name, "org": org, "email": email}, cfg)
-    with open(cfg_file, "r") as cfg:
+    with open(cfg_file) as cfg:
         data = yaml.safe_load(cfg)
     print(data)
     return data
