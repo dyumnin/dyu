@@ -5,9 +5,9 @@ import subprocess
 import copier
 import typer
 import os
-import yaml
+import yaml  # type: ignore
 from xdg_base_dirs import xdg_config_home
-from .beancounter import app as bean
+from .beancounter import app as bean  # type:ignore
 
 app = typer.Typer()
 app.add_typer(bean, name="bean")

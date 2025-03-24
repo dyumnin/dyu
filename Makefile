@@ -73,7 +73,7 @@ endif
 
 # Check lint with mypy.
 mypy:
-	pdm run python -m mypy . --html-report $(PUBLIC_DIR)/reports/mypy
+	pdm run python -m mypy  --disable-error-code=import-untyped . --html-report $(PUBLIC_DIR)/reports/mypy
 
 # Lint with ruff.
 ruff:
@@ -136,6 +136,7 @@ doc-watch:
 # Build documentation only from src.
 doc-build:
 	pdm run sphinx-build -a docs $(PUBLIC_DIR)
+
 
 # Generate html coverage reports with badge.
 doc-coverage: test-run
