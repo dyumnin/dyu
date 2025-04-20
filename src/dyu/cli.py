@@ -36,7 +36,9 @@ def ip(name: str, org: str = "dyu.yaml") -> None:
 @app.command()
 def cocotbext(name: str, org: str = "dyu.yaml") -> None:
     """Creates an cocotbext plugin folder layout."""
-    copier.run_copy("gh:dyu-copier/cocotbext", name, data=read_config(org))
+    data=read_config(org)
+    data['extension_name']=name
+    copier.run_copy("gh:dyu-copier/cocotbext", name, data=data)
 
 
 @app.command()
