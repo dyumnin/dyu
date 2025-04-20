@@ -89,6 +89,8 @@
 <span id="L79" class="lineno"><a class="lineno" href="#L79">79</a></span>
 <span id="L80" class="lineno"><a class="lineno" href="#L80">80</a></span>
 <span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
+<span id="L82" class="lineno"><a class="lineno" href="#L82">82</a></span>
+<span id="L83" class="lineno"><a class="lineno" href="#L83">83</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">"""Command Line Interface."""</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -144,8 +146,12 @@ Omitted Generics (x4)">@app.command()</span>
 <span class="line-precise" title="No Anys on this line!">def cocotbext(name: str, org: str = "dyu.yaml") -&gt; None:</span>
 <span class="line-empty" title="No Anys on this line!">    """Creates an cocotbext plugin folder layout."""</span>
 <span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">    data = read_config(org)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    data["extension_name"] = name</span>
+<span class="line-any" title="Any Types on this line: 
 Explicit (x1)
-Unannotated (x3)">    copier.run_copy("gh:dyu-copier/cocotbext", name, data=read_config(org))</span>
+Unannotated (x1)">    copier.run_copy("gh:dyu-copier/cocotbext", name, data=data)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
