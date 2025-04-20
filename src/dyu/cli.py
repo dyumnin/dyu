@@ -36,13 +36,13 @@ def ip(name: str, org: str = "dyu.yaml") -> None:
 @app.command()
 def cocotbext(name: str, org: str = "dyu.yaml") -> None:
     """Creates an cocotbext plugin folder layout."""
-    copier.run_copy("gh:dyu-copier/cocotbext", name, data=read_config())
+    copier.run_copy("gh:dyu-copier/cocotbext", name, data=read_config(org))
 
 
 @app.command()
 def peakrdl(name: str, org: str = "dyu.yaml") -> None:
     """Creates an peakrdl plugin folder layout."""
-    copier.run_copy("gh:dyu-copier/peakrdl", name, data=read_config())
+    copier.run_copy("gh:dyu-copier/peakrdl", name, data=read_config(org))
 
 
 @app.command()
