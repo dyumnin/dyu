@@ -8,6 +8,8 @@ import os
 import yaml  # type: ignore
 from xdg_base_dirs import xdg_config_home
 from .beancounter import app as bean  # type:ignore
+from .vhier import Vhier
+from .canvas.canvas import run_canvas
 
 app = typer.Typer()
 app.add_typer(bean, name="bean")
@@ -48,6 +50,9 @@ def peakrdl(name: str, org: str = "dyu.yaml") -> None:
 
 
 @app.command()
+def vhier(tool:str="iverilog",file:str="files.f")->None:
+          Vhier(tool,file)
+@app.command()
 def plan(configfile: str, org: str = "dyu.yaml") -> None:
     """Creates a plan using taskJuggler."""
     # template = pkg_resources.resource_filename("dyu", "template/plan.tji")
@@ -74,6 +79,20 @@ def read_config(file="config.yml"):
     print(data)
     return data
 
+@app.command()
+def canvas(
+         filename: str | None = typer.Argument(None, help="File to load (auto-detects format)."),
+    format: str = typer.Option("json", "--format", "-f", help="Default save format.", case_sensitive=False, show_choices=["json", "pickle", "svg"])
+):
+    """
+    Run the infinity canvas submodule.
+
+    Loads FILENAME if provided (auto-detects format). Use hotkeys for interaction.
+    Docs: pydoc3 xyz.canvas
+    """
+    if filename is None:
+        filename = 'untitled'
+    run_canvas(filename, default_format=format)
 
 @app.callback(no_args_is_help=True)
 def main() -> None:
