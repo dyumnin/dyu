@@ -53,11 +53,13 @@ class Canvas:
         logging.debug("Initializing Canvas")
         print("Initializing Canvas")
         pygame.init()
-        self.screen = pygame.display.set_mode((1200, 800))
+        self.screen = pygame.display.set_mode((1200, 800),pygame.RESIZABLE)
         pygame.display.set_caption("Infinity Canvas")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 24)
         self.small_font = pygame.font.Font(None, 16)
+        self.fullscreen = False
+        self.window_size = (1200,800)
         self.zoom = 1.0
         self.pan = (0, 0)
         self.children: List[BaseObject] = []

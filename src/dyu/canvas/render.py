@@ -24,18 +24,18 @@ def world_to_screen(canvas, pos: Tuple[float, float]) -> Tuple[int, int]:
 def draw(canvas):
     """Clear, transform/draw objects, UI."""
     canvas.screen.fill((255, 255, 255))
-    temp_surf = pygame.Surface(canvas.screen.get_size(), pygame.SRCALPHA)
-    temp_surf.fill((255, 255, 255, 0))  # Transparent background
-    logging.debug(f"Drawing {len(canvas.children)} objects")
+    # temp_surf = pygame.Surface(canvas.screen.get_size(), pygame.SRCALPHA)
+    # temp_surf.fill((255, 255, 255, 0))  # Transparent background
+    # logging.debug(f"Drawing {len(canvas.children)} objects")
 
     # Draw debug rectangle to ensure rendering works
-    pygame.draw.rect(temp_surf, (255, 0, 0), (50, 50, 100, 100), 2)
-    logging.debug("Drew debug rectangle at (50, 50, 100, 100)")
+    # pygame.draw.rect(temp_surf, (255, 0, 0), (50, 50, 100, 100), 2)
+    # logging.debug("Drew debug rectangle at (50, 50, 100, 100)")
 
     # Draw all persistent objects
     for obj in canvas.children:
         logging.debug(f"Drawing object: {obj.__class__.__name__}, start={obj.start}, end={obj.end}")
-        obj.draw(temp_surf, canvas.font)
+        obj.draw(canvas.screen, canvas.font,canvas)
 
     # Draw preview for create mode
     if canvas.create_mode and canvas.create_start:
@@ -48,10 +48,9 @@ def draw(canvas):
             fill_color=(200, 200, 200, 128) if canvas.create_mode != 'Arrow' else None,  # Semi-transparent
             label="Preview" if canvas.create_mode == 'Text' else ""
         )
-        preview_obj.draw(temp_surf, canvas.font)
+        preview_obj.draw(canvas.screen, canvas.font,canvas)
 
     # Simplified scaling to avoid off-screen issues
-    canvas.screen.blit(temp_surf, (0, 0))
     if canvas.hovered and canvas.hovered.has_description():
         draw_tooltip(canvas, canvas.hovered.description)
     if canvas.selected:

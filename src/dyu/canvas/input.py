@@ -7,6 +7,7 @@ import logging
 from typing import Optional, Tuple
 from dyu.canvas.base_object import BaseObject
 from dyu.canvas.shapes import SUBCLASS_MAP
+import tkinter as tk
 
 def get_object_at(canvas, pos: Tuple[int, int]) -> Optional[BaseObject]:
     """Find topmost object at world pos (reverse draw order)."""
@@ -23,6 +24,7 @@ def get_object_at(canvas, pos: Tuple[int, int]) -> Optional[BaseObject]:
 
 def edit_properties(canvas, obj: BaseObject):
     """Modal: Draw grid of inputs for props."""
+
     canvas.modal_active = True
     modal_surf = pygame.Surface((400, 300))
     modal_surf.fill((200, 200, 200))
@@ -85,6 +87,16 @@ def handle_event(canvas, event):
     if event.type == KEYDOWN:
         logging.debug(f"Key pressed: key={event.key}, unicode='{event.unicode}'")
         print(f"Key pressed: key={event.key}, unicode='{event.unicode}'")
+        if event.key == K_F11:
+            canvas.fullscreen = not canvas.fullscreen
+            if canvas.fullscreen:
+                # Store current size before going fullscreen
+                canvas.window_size = canvas.screen.get_size()
+                # Set to fullscreen with current desktop resolution
+                canvas.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            else:
+                # Restore the previous window size
+                canvas.screen = pygame.display.set_mode(canvas.window_size, pygame.RESIZABLE)
         if event.key == K_ESCAPE or event.key == K_q:
             logging.debug("Exiting create mode and quitting")
             print("Exiting create mode and quitting")

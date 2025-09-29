@@ -80,9 +80,20 @@ class BaseObject:
         """Factory from dict (use subclass_map for type dispatch)."""
         # Stub; implement in canvas for type resolution
         obj = cls(**{k: v for k, v in data.items() if k != 'children'})
-        obj.children = [BaseObject.from_dict(c, subclass_map) for c in data.get('children', [])]
+        obj.children = [subclass_map.get(c.get('__type__', 'BaseObject'), BaseObject).from_dict(c, subclass_map) for c in data.get('children', [])]
         return obj
 
     def has_description(self) -> bool:
         """True if description is nonempty."""
         return bool(self.description.strip())
+
+    def get_coords(self, canvas):
+        world_x = min(self.start[0],self.end[0])
+        world_y = min(self.start[1],self.end[1])
+        world_width = abs(self.end[0] - self.start[0])
+        world_height = abs(self.end[1] - self.start[1])
+        screen_pos = canvas.world_to_screen((world_x, world_y))
+        screen_width= world_width * canvas.zoom
+        screen_height= world_height * canvas.zoom
+        return(screen_pos,screen_width,screen_height)
+

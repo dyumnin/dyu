@@ -3,7 +3,7 @@ CLI entry point for Infinity Canvas.
 """
 import typer
 from typing import Optional
-from dyu.canvas.canvas import run_canvas
+from .canvas import run_canvas
 
 app = typer.Typer()
 
