@@ -50,8 +50,9 @@ def peakrdl(name: str, org: str = "dyu.yaml") -> None:
 
 
 @app.command()
-def vhier(tool:str="iverilog",file:str="files.f")->None:
-          Vhier(tool,file)
+def vhier(tool:str="iverilog",file:str="files.f", max_iterations:int = 50, path:str='.')->None:
+    print(tool)
+    Vhier(tool,file, max_iterations, [path])
 @app.command()
 def plan(configfile: str, org: str = "dyu.yaml") -> None:
     """Creates a plan using taskJuggler."""
