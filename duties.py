@@ -9,11 +9,11 @@ from importlib.metadata import version as pkgversion
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterator
 
-from duty import duty # type: ignore
-from duty.callables import coverage, mkdocs, mypy,  ruff # type: ignore
+from duty import duty  # type: ignore
+from duty.callables import coverage, mkdocs, mypy, ruff  # type: ignore
 
 if TYPE_CHECKING:
-    from duty.context import Context # type: ignore
+    from duty.context import Context  # type: ignore
 
 
 PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py", "scripts"))
@@ -51,7 +51,7 @@ def changelog(ctx: Context) -> None:
     Parameters:
         ctx: The context instance (passed automatically).
     """
-    from git_changelog.cli import main as git_changelog # type: ignore
+    from git_changelog.cli import main as git_changelog  # type: ignore
 
     ctx.run(git_changelog, args=[[]], title="Updating changelog")
 
@@ -276,7 +276,7 @@ def test(ctx: Context, match: str = "") -> None:
     """
     py_version = f"{sys.version_info.major}{sys.version_info.minor}"
     os.environ["COVERAGE_FILE"] = f".coverage.{py_version}"
-    ctx.run( "make", title="Running tests")
+    ctx.run("make", title="Running tests")
 
 
 @duty

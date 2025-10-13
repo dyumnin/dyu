@@ -39,7 +39,10 @@ class BaseObject:
             self.id = str(uuid.uuid4())
 
     def draw(
-        self, surface: pygame.Surface, font: Optional[pygame.font.Font] = None, canvas=None
+        self,
+        surface: pygame.Surface,
+        font: Optional[pygame.font.Font] = None,
+        canvas=None,
     ) -> pygame.Rect:
         """
         Draw self and children recursively. Returns bounding Rect in screen coordinates.
@@ -92,11 +95,15 @@ class BaseObject:
         cls_name = data.get("__type__", "BaseObject")
         target_cls = subclass_map.get(cls_name, BaseObject)
         # Filter valid init args
-        init_args = {k: v for k, v in data.items() if k != "children" and k != "__type__"}
+        init_args = {
+            k: v for k, v in data.items() if k != "children" and k != "__type__"
+        }
         obj = target_cls(**init_args)
         # Recursively create children
         obj.children = [
-            subclass_map.get(c.get("__type__", "BaseObject"), BaseObject).from_dict(c, subclass_map)
+            subclass_map.get(c.get("__type__", "BaseObject"), BaseObject).from_dict(
+                c, subclass_map
+            )
             for c in data.get("children", [])
         ]
         return obj

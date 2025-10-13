@@ -32,7 +32,7 @@ class ToolBase:
     def run_command(self) -> str:
         """Run the tool command and return its output."""
         try:
-            print("Running ",' '.join(self.COMMAND))
+            print("Running ", " ".join(self.COMMAND))
             result = subprocess.run(
                 self.COMMAND, capture_output=True, text=True, check=False
             )
@@ -57,7 +57,6 @@ class ToolBase:
             )
             return ""
         except subprocess.SubprocessError as e:
-
             print(f"Error running {self.CURRENT_TOOL}: {e}")
             return ""
 

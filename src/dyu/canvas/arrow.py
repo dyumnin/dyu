@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 import pygame
 import math
 
+
 class Arrow(BaseObject):
     """
     Directed arrow with optional connections to other objects.

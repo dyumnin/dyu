@@ -23,17 +23,27 @@ TOOLS = {
         "TYPEDEF_ERROR": r"Error-\[TDEF\]\s*Typedef multiply defined\s*(.*?)\s*,\s*(\d+)\s*(?:[^\n]*\n)*?\s*Typedef\s*'(.*?)'\s*multiply defined\s*",
         "MODULE_NOT_DEFINED": r"Error-\[URMI\]\s*Unresolved modules\s*(.*?)\s*,\s*(\d+)\s*(?:[^\n]*\n)*?\s*\"\s*(\w+)(?:[\s\S]*?)?\"\s*Module definition of above instance is not found\s*",
     },
-    "verilator":{
-        "INCLUDE_ERROR":r"\%Error: (.*?):\d+:\d+: Cannot find include file: (.*?)$",
-        "MACRO_ERROR":r"foo",
-        "UNCOMPILED_MODULE":r"\%Error: (.*?):\d+:\d+: Cannot find file containing module: '([^']*)'",
-        "TYPEDEF_ERROR":r"foo",
-        "MODULE_NOT_DEFINED":r"foo",
-},
-    }
+    "verilator": {
+        "INCLUDE_ERROR": r"\%Error: (.*?):\d+:\d+: Cannot find include file: (.*?)$",
+        "MACRO_ERROR": r"foo",
+        "UNCOMPILED_MODULE": r"\%Error: (.*?):\d+:\d+: Cannot find file containing module: '([^']*)'",
+        "TYPEDEF_ERROR": r"foo",
+        "MODULE_NOT_DEFINED": r"foo",
+    },
+}
 COMMANDS = {
     "vlog": ["vlog", "-sv", "-f", "files.f"],
     "vcs": ["vcs", "-full64", "-f", "files.f", "-sverilog", "-timescale=1ps/1ps"],
     "iverilog": ["iverilog", "-g2012", "-f", "files.f"],
-    "verilator": ["verilator",'-timescale','1ps/1ps', "-sv", "--cc", "-f", "files.f","-Wno-fatal","-Wno-BLKANDNBLK"],
+    "verilator": [
+        "verilator",
+        "-timescale",
+        "1ps/1ps",
+        "-sv",
+        "--cc",
+        "-f",
+        "files.f",
+        "-Wno-fatal",
+        "-Wno-BLKANDNBLK",
+    ],
 }
