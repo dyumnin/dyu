@@ -35,10 +35,10 @@ dynamic = [
 dependencies = [
   "copier>=9.3.1",
   "pydantic-settings",
+  "pygame>=2.6.1",
   "requests",
   "typer>=0.19.2",
   "xdg-base-dirs",
-  "pygame>=2.6.1",
 ]
 optional-dependencies.dev = [
   "lxml>=5.3.1",

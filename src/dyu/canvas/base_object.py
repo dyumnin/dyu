@@ -7,6 +7,7 @@ fill_color (RGB tuple), description (Markdown str), children (list of BaseObject
 Each subclass implements draw(surface: pygame.Surface) -> pygame.Rect (bounding box).
 Supports serialization for JSON/pickle.
 """
+
 import uuid
 from dataclasses import dataclass, field, asdict
 from typing import List, Tuple, Optional
@@ -20,9 +21,10 @@ class BaseObject:
 
     Example:
         obj = Rectangle(start=(0,0), end=(100,100), label="Box")
-        rect = obj.draw(surface)
+        rect = obj.draw(surface, font, canvas)
         # rect is the bounding Rect for positioning
     """
+
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     start: Tuple[int, int] = (0, 0)
     end: Tuple[int, int] = (100, 100)
@@ -30,34 +32,40 @@ class BaseObject:
     color: Tuple[int, int, int] = (0, 0, 0)
     fill_color: Tuple[int, int, int] = (255, 255, 255)
     description: str = ""
-    children: List['BaseObject'] = field(default_factory=list)
+    children: List["BaseObject"] = field(default_factory=list)
 
     def __post_init__(self):
         if not self.id:
             self.id = str(uuid.uuid4())
 
-    def draw(self, surface: pygame.Surface, font: Optional[pygame.font.Font] = None) -> pygame.Rect:
+    def draw(
+        self, surface: pygame.Surface, font: Optional[pygame.font.Font] = None, canvas=None
+    ) -> pygame.Rect:
         """
-        Draw self and children recursively. Returns bounding Rect.
+        Draw self and children recursively. Returns bounding Rect in screen coordinates.
 
         Subclasses override for specific rendering (e.g., line, rect).
         """
-        rect = pygame.Rect(self.start[0], self.start[1], 0, 0)
+        # Convert world to screen coordinates using canvas
+        screen_start = canvas.world_to_screen(self.start) if canvas else self.start
+        rect = pygame.Rect(screen_start[0], screen_start[1], 0, 0)
         # Draw children first (background)
         for child in self.children:
-            child_rect = child.draw(surface, font)
+            child_rect = child.draw(surface, font, canvas)
             rect.union_ip(child_rect)
         # Draw self (stub; override in subclass)
         if self.label and font:
             text_surf = font.render(self.label, True, self.color)
-            surface.blit(text_surf, self.start)
-            rect.union_ip(text_surf.get_rect(topleft=self.start))
+            surface.blit(text_surf, screen_start)
+            rect.union_ip(text_surf.get_rect(topleft=screen_start))
+        # Pad bounding box for easier selection
+        rect.inflate_ip(10, 10)
         return rect
 
     def get_bounding_box(self) -> pygame.Rect:
-        """Compute full bounding box including children."""
-        min_x = min_y = float('inf')
-        max_x = max_y = float('-inf')
+        """Compute full bounding box including children in world coordinates."""
+        min_x = min_y = float("inf")
+        max_x = max_y = float("-inf")
         points = [(self.start, self.end)]
         for child in self.children:
             c_box = child.get_bounding_box()
@@ -67,20 +75,30 @@ class BaseObject:
             min_y = min(min_y, start[1], end[1])
             max_x = max(max_x, start[0], end[0])
             max_y = max(max_y, start[1], end[1])
-        return pygame.Rect(min_x, min_y, max_x - min_x, max_y - min_y)
+        return pygame.Rect(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
 
     def to_dict(self) -> dict:
         """For JSON serialization (recursive)."""
         data = asdict(self)
-        data['children'] = [c.to_dict() for c in self.children]
+        data["__type__"] = self.__class__.__name__
+        data["children"] = [c.to_dict() for c in self.children]
         return data
 
     @classmethod
     def from_dict(cls, data: dict, subclass_map: dict = None):
         """Factory from dict (use subclass_map for type dispatch)."""
-        # Stub; implement in canvas for type resolution
-        obj = cls(**{k: v for k, v in data.items() if k != 'children'})
-        obj.children = [subclass_map.get(c.get('__type__', 'BaseObject'), BaseObject).from_dict(c, subclass_map) for c in data.get('children', [])]
+        subclass_map = subclass_map or {}
+        # Create instance of correct class
+        cls_name = data.get("__type__", "BaseObject")
+        target_cls = subclass_map.get(cls_name, BaseObject)
+        # Filter valid init args
+        init_args = {k: v for k, v in data.items() if k != "children" and k != "__type__"}
+        obj = target_cls(**init_args)
+        # Recursively create children
+        obj.children = [
+            subclass_map.get(c.get("__type__", "BaseObject"), BaseObject).from_dict(c, subclass_map)
+            for c in data.get("children", [])
+        ]
         return obj
 
     def has_description(self) -> bool:
@@ -88,12 +106,11 @@ class BaseObject:
         return bool(self.description.strip())
 
     def get_coords(self, canvas):
-        world_x = min(self.start[0],self.end[0])
-        world_y = min(self.start[1],self.end[1])
+        world_x = min(self.start[0], self.end[0])
+        world_y = min(self.start[1], self.end[1])
         world_width = abs(self.end[0] - self.start[0])
         world_height = abs(self.end[1] - self.start[1])
         screen_pos = canvas.world_to_screen((world_x, world_y))
-        screen_width= world_width * canvas.zoom
-        screen_height= world_height * canvas.zoom
-        return(screen_pos,screen_width,screen_height)
-
+        screen_width = world_width * canvas.zoom
+        screen_height = world_height * canvas.zoom
+        return (screen_pos, screen_width, screen_height)

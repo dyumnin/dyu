@@ -5,9 +5,19 @@ from typing import List, Tuple, Optional
 from .common import FileUtils
 from .patterns import TOOLS, COMMANDS
 
+
 class ToolBase:
-    def __init__(self, tool: str, dotf: str, paths: List[str], include_directive: str, 
-                 include_group: int, module_group: int, error_prefixes: List[str],max_iterations:int=50):
+    def __init__(
+        self,
+        tool: str,
+        dotf: str,
+        paths: List[str],
+        include_directive: str,
+        include_group: int,
+        module_group: int,
+        error_prefixes: List[str],
+        max_iterations: int = 50,
+    ):
         """Initialize ToolBase with tool-specific configuration."""
         self.CURRENT_TOOL = tool
         self.MESSAGE_TYPES = TOOLS.get(self.CURRENT_TOOL, {})
@@ -22,18 +32,32 @@ class ToolBase:
     def run_command(self) -> str:
         """Run the tool command and return its output."""
         try:
-            result = subprocess.run(self.COMMAND, capture_output=True, text=True, check=False)
+            print("Running ",' '.join(self.COMMAND))
+            result = subprocess.run(
+                self.COMMAND, capture_output=True, text=True, check=False
+            )
             if result.stdout.strip():
                 print(f"STDOUT (length: {len(result.stdout)}):")
-                print(result.stdout.strip()[:500] + "..." if len(result.stdout) > 500 else result.stdout.strip())
+                print(
+                    result.stdout.strip()[:500] + "..."
+                    if len(result.stdout) > 500
+                    else result.stdout.strip()
+                )
             if result.stderr.strip():
                 print(f"STDERR (length: {len(result.stderr)}):")
-                print(result.stderr.strip()[:500] + "..." if len(result.stderr) > 500 else result.stderr.strip())
+                print(
+                    result.stderr.strip()[:500] + "..."
+                    if len(result.stderr) > 500
+                    else result.stderr.strip()
+                )
             return (result.stdout + result.stderr).strip()
         except FileNotFoundError:
-            print(f"Error: '{self.CURRENT_TOOL}' command not found. Ensure it is installed and in PATH.")
+            print(
+                f"Error: '{self.CURRENT_TOOL}' command not found. Ensure it is installed and in PATH."
+            )
             return ""
         except subprocess.SubprocessError as e:
+
             print(f"Error running {self.CURRENT_TOOL}: {e}")
             return ""
 
@@ -42,7 +66,9 @@ class ToolBase:
         matches = []
         print(f"Total output length: {len(output)}")
         if len(output) > 10000:
-            print(f"Warning: Large output ({len(output)} characters) may slow down parsing. Consider truncating or filtering.")
+            print(
+                f"Warning: Large output ({len(output)} characters) may slow down parsing. Consider truncating or filtering."
+            )
 
         lines = output.splitlines()
         match_objects = []
@@ -68,7 +94,11 @@ class ToolBase:
             if any(line.startswith(prefix) for prefix in self.error_prefixes):
                 error_block = [line]
                 j = i + 1
-                while j < len(lines) and (lines[j].startswith((" ", "\t", "** while parsing file included at"))):
+                while j < len(lines) and (
+                    lines[j].startswith(
+                        (" ", "\t", "** while parsing file included at")
+                    )
+                ):
                     error_block.append(lines[j])
                     j += 1
                 unmatched_errors.append("\n".join(error_block))
@@ -77,7 +107,11 @@ class ToolBase:
                 i += 1
 
         matched_lines = {match.group(0) for match in match_objects}
-        unmatched_errors = [error for error in unmatched_errors if not any(line in matched_lines for line in error.splitlines())]
+        unmatched_errors = [
+            error
+            for error in unmatched_errors
+            if not any(line in matched_lines for line in error.splitlines())
+        ]
         if unmatched_errors:
             print(f"Unmatched errors ({len(unmatched_errors)}):")
             for error in unmatched_errors[:5]:
@@ -107,19 +141,27 @@ class ToolBase:
                 return f"{macro_file}\n"
         elif error_type == "TYPEDEF_ERROR":
             file_path, line_num, typedef_name = match_data[:3]
-            print(f"Warning: Typedef '{typedef_name}' multiply defined in {file_path}:{line_num}. "
-                  f"Check for redundant include dirs in {self.fu.FILES_F} or missing include guards.")
+            print(
+                f"Warning: Typedef '{typedef_name}' multiply defined in {file_path}:{line_num}. "
+                f"Check for redundant include dirs in {self.fu.FILES_F} or missing include guards."
+            )
             return None
         return None
 
     def get_append_pattern(self, error_type: str, match_data: tuple) -> Optional[str]:
         """Generate the pattern to append for uncompiled modules or module not defined errors."""
         if error_type in ["UNCOMPILED_MODULE", "MODULE_NOT_DEFINED"]:
-            modules = match_data[self.module_group].strip().split() if error_type == "UNCOMPILED_MODULE" else [match_data[self.module_group].strip()]
+            modules = (
+                match_data[self.module_group].strip().split()
+                if error_type == "UNCOMPILED_MODULE"
+                else [match_data[self.module_group].strip()]
+            )
             patterns = []
             content = self.fu._read_file(self.fu.FILES_F) or ""
             for module in modules:
-                module_name = os.path.basename(module).replace('.v', '').replace('.sv', '')
+                module_name = (
+                    os.path.basename(module).replace(".v", "").replace(".sv", "")
+                )
                 module_file = self.fu.find_module_file(module_name)
                 if module_file:
                     if module_file in content:
@@ -144,17 +186,19 @@ class ToolBase:
         while iteration < max_iterations:
             iteration += 1
             print(f"\n--- Iteration {iteration} ---")
-            
+
+            print("Running")
             output = self.run_command()
+            print("Done Running")
             if not output:
                 print("No output from command. Exiting.")
                 break
-            
+
             matches = self.parse_output(output)
             if not matches:
                 print("No more message types matched. Exiting.")
                 break
-            
+
             for msg_type, match_data in matches:
                 if msg_type in ["UNCOMPILED_MODULE", "MODULE_NOT_DEFINED"]:
                     pattern = self.get_append_pattern(msg_type, match_data)

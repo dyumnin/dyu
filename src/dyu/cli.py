@@ -50,9 +50,16 @@ def peakrdl(name: str, org: str = "dyu.yaml") -> None:
 
 
 @app.command()
-def vhier(tool:str="iverilog",file:str="files.f", max_iterations:int = 50, path:str='.')->None:
+def vhier(
+    tool: str = "iverilog",
+    file: str = "files.f",
+    max_iterations: int = 50,
+    path: str = ".",
+) -> None:
     print(tool)
-    Vhier(tool,file, max_iterations, [path])
+    Vhier(tool, file, max_iterations, [path])
+
+
 @app.command()
 def plan(configfile: str, org: str = "dyu.yaml") -> None:
     """Creates a plan using taskJuggler."""
@@ -80,10 +87,20 @@ def read_config(file="config.yml"):
     print(data)
     return data
 
+
 @app.command()
 def canvas(
-         filename: str | None = typer.Argument(None, help="File to load (auto-detects format)."),
-    format: str = typer.Option("json", "--format", "-f", help="Default save format.", case_sensitive=False, show_choices=["json", "pickle", "svg"])
+    filename: str | None = typer.Argument(
+        None, help="File to load (auto-detects format)."
+    ),
+    format: str = typer.Option(
+        "json",
+        "--format",
+        "-f",
+        help="Default save format.",
+        case_sensitive=False,
+        show_choices=["json", "pickle", "svg"],
+    ),
 ):
     """
     Run the infinity canvas submodule.
@@ -92,8 +109,9 @@ def canvas(
     Docs: pydoc3 xyz.canvas
     """
     if filename is None:
-        filename = 'untitled'
+        filename = "untitled"
     run_canvas(filename, default_format=format)
+
 
 @app.callback(no_args_is_help=True)
 def main() -> None:
